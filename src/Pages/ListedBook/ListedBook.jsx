@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLoaderData} from 'react-router';
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
-import { getStoredItem, removeItemFromDB } from '../../utility/addToDB';
+import { getStoredItem, removeItemFromDB} from '../../utility/addToDB';
 import { ChevronDown, FileText, MapPin, UsersRound } from 'lucide-react';
 import { getStoredWishlist } from '../../utility/addWishlistToDB';
 
 const ListedBook = () => {
     const data = useLoaderData()
+    console.log(data);
     const [readList, setReadList] = useState([])
     const [wishlist, setWishlist] = useState([])
     
@@ -15,10 +16,10 @@ const ListedBook = () => {
 
     useEffect(() => {
         const storedList = getStoredItem();
-        const convertedStoredList = storedList.map(id => parseInt(id));
-        const myReadList = data.filter(book => convertedStoredList.includes(book.bookId));
+        const convertedStoredList = storedList?.map(id => parseInt(id));
+        const myReadList = data?.filter(book => convertedStoredList.includes(book.bookId));
         setReadList(myReadList)
-    }, [])
+    }, [data])
 
     const handleSort = (type) => {
         setSort(type)
@@ -36,25 +37,17 @@ const ListedBook = () => {
 
     useEffect(() => {
         const storedWishList = getStoredWishlist();
-        const convertedWishlist = storedWishList.map(id => parseInt(id))
-        const myWishlist = data.filter(book => convertedWishlist.includes(book.bookId));
+        const convertedWishlist = storedWishList?.map(id => parseInt(id))
+        const myWishlist = data?.filter(book => convertedWishlist.includes(book.bookId));
         setWishlist(myWishlist)
-    }, []);
+    }, [data]);
+    console.log(data);
 
 
     const handleRemoveItem = (id) => {
-        // const removedId = removeItemFromDB(id)
-        // console.log(removedId);
-        // const remainingList = readList.filter(item => item.bookId !== removedId)
-        // setReadList(remainingList)
-        // const remaingStoreIds = removeItemFromDB(id)
-        // const remainingList = [];
-        // const itemId = readList.bookId
-        // if(itemId.includes(remaingStoreIds)){
-
-        //     remainingList.push(itemId)
-        //     setReadList(remainingList)
-        // }
+        removeItemFromDB(id)
+        const remainingList = readList.filter(item => item.bookId !== id)
+        setReadList(remainingList)
     }
 
     
@@ -109,7 +102,7 @@ const ListedBook = () => {
                                         <Link to={`/bookDetails/${book.bookId}`}>
                                             <button className='btn bg-[#23BE0A] text-white rounded-4xl'>View Details</button>
                                         </Link>
-                                        <button onClick={() => handleRemoveItem(book.bookId)} className='btn btn-error'>X</button>
+                                        <button onClick={()=> handleRemoveItem(book.bookId)}  className='btn btn-error'>X</button>
                                     </div>
                                 </div>
                             </div>
